@@ -1,0 +1,234 @@
+echo "# Game" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/defreceshelby/Game.git
+git push -u origin mai
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Classification Game</title>
+
+    <!-- React + ReactDOM (CDN) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- Babel (for JSX) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Framer Motion (UMD build) -->
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@10.12.16/dist/framer-motion.umd.js"></script>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+
+      button {
+        padding: 10px;
+        margin: 5px;
+        font-size: 16px;
+      }
+
+      .draggable {
+        padding: 10px;
+        background: #bde0fe;
+        margin: 5px;
+        border-radius: 5px;
+        cursor: grab;
+      }
+
+      .dropzone {
+        padding: 20px;
+        border: 2px solid gray;
+        margin: 5px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState } = React;
+      const { motion } = window["framer-motion"];
+
+      function ClassificationGame() {
+        const [page, setPage] = useState(1);
+        const [score, setScore] = useState(0);
+        const [attempts, setAttempts] = useState(0);
+        const [dragResult, setDragResult] = useState(null);
+
+        const handleAnswer = (correct) => {
+          setAttempts((p) => p + 1);
+          if (correct) setScore((s) => s + 1);
+          setPage((p) => p + 1);
+        };
+
+        const percentage =
+          attempts > 0 ? Math.round((score / attempts) * 100) : 0;
+
+        const onDragStart = (e, id) => {
+          e.dataTransfer.setData("item", id);
+        };
+
+        const onDrop = (e, target) => {
+          const item = e.dataTransfer.getData("item");
+          const correct = item === target;
+          setDragResult(correct ? "Correct!" : "Incorrect");
+          handleAnswer(correct);
+        };
+
+        const allowDrop = (e) => e.preventDefault();
+
+        return (
+          <div>
+            {page === 1 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <h1>What is Classification?</h1>
+                <p>
+                  Biological classification organizes living things based on
+                  shared traits.
+                </p>
+                <button onClick={() => setPage(2)}>Next</button>
+              </motion.div>
+            )}
+
+            {page === 2 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <h1>Cladograms</h1>
+                <p>
+                  A cladogram shows relationships based on shared derived
+                  traits.
+                </p>
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/7/70/Cladogram_example.png"
+                  width="300"
+                />
+                <button onClick={() => setPage(3)}>Next</button>
+              </motion.div>
+            )}
+
+            {page === 3 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <h1>Phylogenetic Trees</h1>
+                <p>These diagrams show evolutionary ancestry.</p>
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/7/70/Simple_phylogenetic_tree.png"
+                  width="300"
+                />
+                <button onClick={() => setPage(4)}>Next</button>
+              </motion.div>
+            )}
+
+            {page === 4 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <h1>Drag-and-Drop Classification</h1>
+                <p>Drag each organism to the correct group.</p>
+
+                <div style={{ display: "flex", gap: "40px" }}>
+                  <div>
+                    <h3>Organisms</h3>
+                    <div
+                      className="draggable"
+                      draggable
+                      onDragStart={(e) => onDragStart(e, "mammal")}
+                    >
+                      Dolphin
+                    </div>
+
+                    <div
+                      className="draggable"
+                      draggable
+                      onDragStart={(e) => onDragStart(e, "bird")}
+                    >
+                      Eagle
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3>Drop Zones</h3>
+                    <div
+                      className="dropzone"
+                      onDrop={(e) => onDrop(e, "mammal")}
+                      onDragOver={allowDrop}
+                    >
+                      Mammal
+                    </div>
+
+                    <div
+                      className="dropzone"
+                      onDrop={(e) => onDrop(e, "bird")}
+                      onDragOver={allowDrop}
+                    >
+                      Bird
+                    </div>
+                  </div>
+                </div>
+
+                {dragResult && <h3>{dragResult}</h3>}
+              </motion.div>
+            )}
+
+            {page === 5 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <h1>Practice Question</h1>
+                <p>Which characteristic is MOST useful in a cladogram?</p>
+                <button onClick={() => handleAnswer(true)}>
+                  Shared derived traits
+                </button>
+                <button onClick={() => handleAnswer(false)}>Body size</button>
+                <button onClick={() => handleAnswer(false)}>Color</button>
+              </motion.div>
+            )}
+
+            {page === 6 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <h1>Another Check</h1>
+                <p>Phylogenetic trees show relationships based on:</p>
+                <button onClick={() => handleAnswer(true)}>
+                  Evolutionary ancestry
+                </button>
+                <button onClick={() => handleAnswer(false)}>Habitat</button>
+                <button onClick={() => handleAnswer(false)}>Diet</button>
+              </motion.div>
+            )}
+
+            {page === 7 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <h1>Final Quiz</h1>
+                <p>Which diagram shows evolutionary history?</p>
+                <button onClick={() => handleAnswer(true)}>
+                  Phylogenetic tree
+                </button>
+                <button onClick={() => handleAnswer(false)}>Bar graph</button>
+                <button onClick={() => handleAnswer(false)}>
+                  Punnett square
+                </button>
+              </motion.div>
+            )}
+
+            {page === 8 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <h1>Results</h1>
+                <p>
+                  Correct: {score} / {attempts}
+                </p>
+                <h2>Your Score: {percentage}%</h2>
+              </motion.div>
+            )}
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(
+        <ClassificationGame />
+      );
+    </script>
+  </body>
+</html>
